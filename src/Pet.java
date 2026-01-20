@@ -1,3 +1,7 @@
+/*
+  Represents a single pet with a name and age.
+  This class uses basic encapsulation and getters/setters.
+*/
 public class Pet {
     private String name;
     private int age;
@@ -7,6 +11,7 @@ public class Pet {
         this.age = age;
     }
 
+    // Accessor methods
     public String getName() {
         return name;
     }
@@ -15,6 +20,7 @@ public class Pet {
         return age;
     }
 
+    // Mutator methods
     public void setName(String name) {
         this.name = name;
     }
