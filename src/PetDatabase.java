@@ -3,7 +3,7 @@ import java.util.List;
 
 /*
   PetDatabase manages a dynamic list of Pet objects.
-  Release 2: supports adding, listing, and searching pets.
+  Release 3: Supports adding, listing, searching, updating, and removing pets.
 */
 public class PetDatabase {
 
@@ -23,6 +23,23 @@ public class PetDatabase {
         return pets.size();
     }
 
+    // Returns a pet by index (ID) 
+    public Pet getPet(int index) {
+        return pets.get(index);
+    }
+
+    // Update the name and age of an existing pet
+    public void updatePet(int index, String newName, int newAge) {
+        Pet p = pets.get(index);
+        p.setName(newName);
+        p.setAge(newAge);
+    }
+
+    // Removes a pet by index and returns the removed pet 
+    public Pet removePet(int index) {
+        return pets.remove(index);
+    }
+
     // Prints all pets in a formatted table.
     public void printAllPets() {
         String line = "+----------------------+";
@@ -39,7 +56,7 @@ public class PetDatabase {
         System.out.printf("%d rows in set.%n", pets.size());
     }
 
-    // Print pets that match a given name (case-insensitive)
+    // Print pets that match a given name  
     public void printPetsByName(String name) {
         String line = "+----------------------+";
         System.out.println(line);

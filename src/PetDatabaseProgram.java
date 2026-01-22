@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 /*
   Main class that handles all user interaction.
-  Release 2: view, add, and search pets.
+  Release 3: Now all features are added (view, add, update, remove, search).
 */
 public class PetDatabaseProgram {
 
@@ -39,8 +39,11 @@ public class PetDatabaseProgram {
                     break;
 
                 case 3:
+                    updatePet(scanner, database);
+                    break;
+
                 case 4:
-                    System.out.println("This feature is not implemented in this release.");
+                    removePet(scanner, database);
                     break;
 
                 case 5:
@@ -116,6 +119,90 @@ public class PetDatabaseProgram {
         }
 
         System.out.printf("%d pets added.%n", addedCount);
+    }
+
+    /*
+      Updates a single pet based on ID.
+      Shows table, asks for ID, then asks for new name/age.
+    */
+    private static void updatePet(Scanner scanner, PetDatabase database) {
+        if (database.size() == 0) {
+            System.out.println("No pets in database to update.");
+            return;
+        }
+
+        database.printAllPets();
+        System.out.print("Enter the pet ID you want to update: ");
+
+        int id;
+        try {
+            id = Integer.parseInt(scanner.nextLine().trim());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid ID.");
+            return;
+        }
+
+        if (id < 0 || id >= database.size()) {
+            System.out.println("ID out of range.");
+            return;
+        }
+
+        // Retrieve old pet for message output
+        Pet oldPet = database.getPet(id);
+
+        System.out.print("Enter new name and new age: ");
+        String[] parts = scanner.nextLine().trim().split("\\s+");
+
+        if (parts.length != 2) {
+            System.out.println("Invalid input. Please enter: name age");
+            return;
+        }
+
+        String newName = parts[0];
+        int newAge;
+
+        // Validate new age
+        try {
+            newAge = Integer.parseInt(parts[1]);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid age.");
+            return;
+        }
+
+        database.updatePet(id, newName, newAge);
+
+        System.out.printf("%s %d changed to %s %d.%n",
+                oldPet.getName(), oldPet.getAge(), newName, newAge);
+    }
+
+    /*
+      Removes a pet based on ID.
+      Shows table → asks for ID → removes pet.
+    */
+    private static void removePet(Scanner scanner, PetDatabase database) {
+        if (database.size() == 0) {
+            System.out.println("No pets in database to remove.");
+            return;
+        }
+
+        database.printAllPets();
+        System.out.print("Enter the pet ID to remove: ");
+
+        int id;
+        try {
+            id = Integer.parseInt(scanner.nextLine().trim());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid ID.");
+            return;
+        }
+
+        if (id < 0 || id >= database.size()) {
+            System.out.println("ID out of range.");
+            return;
+        }
+
+        Pet removed = database.removePet(id);
+        System.out.printf("%s %d is removed.%n", removed.getName(), removed.getAge());
     }
 
     // Searches pets by name 
