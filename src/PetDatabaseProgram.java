@@ -6,9 +6,15 @@ import java.util.Scanner;
 */
 public class PetDatabaseProgram {
 
+    // 🔹 Milestone 3: file where pet data is stored
+    private static final String DATA_FILE = "pets.txt";
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         PetDatabase database = new PetDatabase();
+
+        // 🔹 Load existing pets from file (if it exists)
+        database.loadFromFile(DATA_FILE);
 
         System.out.println("Pet Database Program.");
 
@@ -55,6 +61,8 @@ public class PetDatabaseProgram {
                     break;
 
                 case 7:
+                    // 🔹 Save pets to file before exiting
+                    database.saveToFile(DATA_FILE);
                     System.out.println("Goodbye!");
                     running = false;
                     break;

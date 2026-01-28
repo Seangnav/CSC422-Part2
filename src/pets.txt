@@ -1,0 +1,4 @@
+Nala 5
+Snowy 10
+Pinky 2
+Evee 3

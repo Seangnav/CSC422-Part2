@@ -1,5 +1,11 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Scanner;
 
 /*
   PetDatabase manages a dynamic list of Pet objects.
@@ -96,5 +102,55 @@ public class PetDatabase {
 
         System.out.println(line);
         System.out.printf("%d rows in set.%n", count);
+    }
+
+    // 🔹 Milestone 3: Load pets from a text file
+    public void loadFromFile(String filename) {
+        File file = new File(filename);
+
+        if (!file.exists()) {
+            // No file yet, start with empty database
+            return;
+        }
+
+        try (Scanner fileScanner = new Scanner(file)) {
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine().trim();
+                if (line.isEmpty()) {
+                    continue;
+                }
+
+                String[] parts = line.split("\\s+");
+                if (parts.length != 2) {
+                    // Bad line format, skip it
+                    continue;
+                }
+
+                String name = parts[0];
+                int age;
+
+                try {
+                    age = Integer.parseInt(parts[1]);
+                } catch (NumberFormatException e) {
+                    // Invalid age in file, skip that line
+                    continue;
+                }
+
+                addPet(name, age);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Could not load pets from file: " + e.getMessage());
+        }
+    }
+
+    // 🔹 Milestone 3: Save pets to a text file
+    public void saveToFile(String filename) {
+        try (PrintWriter out = new PrintWriter(new FileWriter(filename))) {
+            for (Pet p : pets) {
+                out.println(p.getName() + " " + p.getAge());
+            }
+        } catch (IOException e) {
+            System.out.println("Could not save pets to file: " + e.getMessage());
+        }
     }
 }
