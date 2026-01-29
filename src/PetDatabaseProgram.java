@@ -7,14 +7,14 @@ import java.util.Scanner;
 public class PetDatabaseProgram {
 
     // 🔹 Milestone 3: file where pet data is stored
-    private static final String DATA_FILE = "pets.txt";
+    private static final String Pets_Stored_File = "pets.txt";
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         PetDatabase database = new PetDatabase();
 
         // 🔹 Load existing pets from file (if it exists)
-        database.loadFromFile(DATA_FILE);
+        database.loadFromFile(Pets_Stored_File);
 
         System.out.println("Pet Database Program.");
 
@@ -61,11 +61,13 @@ public class PetDatabaseProgram {
                     break;
 
                 case 7:
-                    // 🔹 Save pets to file before exiting
-                    database.saveToFile(DATA_FILE);
+                    // Save pets to file before exiting
+                    database.saveToFile(Pets_Stored_File);
+                    System.out.println("Saved!");
                     System.out.println("Goodbye!");
                     running = false;
                     break;
+
 
                 default:
                     System.out.println("Invalid choice. Please enter 1–7.");
@@ -107,7 +109,7 @@ public class PetDatabaseProgram {
 
             // Expect exactly two parts: name and age
             if (parts.length != 2) {
-                System.out.println("Invalid input. Please enter: name age");
+                System.out.printf("Error: %s is not a valid input.%n", line);
                 continue;
             }
 
@@ -118,11 +120,23 @@ public class PetDatabaseProgram {
             try {
                 age = Integer.parseInt(parts[1]);
             } catch (NumberFormatException e) {
-                System.out.println("Invalid age. Must be an integer.");
+                System.out.printf("Error: %s is not a valid input.%n", line);
                 continue;
             }
 
-            database.addPet(name, age);
+            // Milestone 4 / Issue 3: age must be 1–20
+            if (age < 1 || age > 20) {
+                System.out.printf("Error: %d is not a valid age.%n", age);
+                continue;
+            }
+
+            // Milestone 4: database supports only 5 entries
+            boolean added = database.addPet(name, age);
+            if (!added) {
+                System.out.println("Error: Database is full.");
+                break;
+            }
+
             addedCount++;
         }
 
@@ -151,7 +165,7 @@ public class PetDatabaseProgram {
         }
 
         if (id < 0 || id >= database.size()) {
-            System.out.println("ID out of range.");
+            System.out.printf("Error: ID %d does not exist.%n", id);
             return;
         }
 
@@ -159,10 +173,11 @@ public class PetDatabaseProgram {
         Pet oldPet = database.getPet(id);
 
         System.out.print("Enter new name and new age: ");
-        String[] parts = scanner.nextLine().trim().split("\\s+");
+        String line = scanner.nextLine().trim();
+        String[] parts = line.split("\\s+");
 
         if (parts.length != 2) {
-            System.out.println("Invalid input. Please enter: name age");
+            System.out.printf("Error: %s is not a valid input.%n", line);
             return;
         }
 
@@ -173,7 +188,13 @@ public class PetDatabaseProgram {
         try {
             newAge = Integer.parseInt(parts[1]);
         } catch (NumberFormatException e) {
-            System.out.println("Invalid age.");
+            System.out.printf("Error: %s is not a valid input.%n", line);
+            return;
+        }
+
+        // Milestone 4 / Issue 3: age must be 1–20
+        if (newAge < 1 || newAge > 20) {
+            System.out.printf("Error: %d is not a valid age.%n", newAge);
             return;
         }
 
@@ -196,16 +217,19 @@ public class PetDatabaseProgram {
         database.printAllPets();
         System.out.print("Enter the pet ID to remove: ");
 
+        String input = scanner.nextLine().trim();
         int id;
+
         try {
-            id = Integer.parseInt(scanner.nextLine().trim());
+            id = Integer.parseInt(input);
         } catch (NumberFormatException e) {
-            System.out.println("Invalid ID.");
+            System.out.printf("Error: ID %s does not exist.%n", input);
             return;
         }
 
+        // Milestone 4: sample run
         if (id < 0 || id >= database.size()) {
-            System.out.println("ID out of range.");
+            System.out.printf("Error: ID %d does not exist.%n", id);
             return;
         }
 

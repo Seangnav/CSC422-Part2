@@ -15,13 +15,21 @@ public class PetDatabase {
 
     private List<Pet> pets;
 
+    // Milestone 4: Database supports only 5 entries
+    private static final int MAX_PETS = 5;
+
     public PetDatabase() {
         this.pets = new ArrayList<>();
     }
 
     // Add a new pet to the list 
-    public void addPet(String name, int age) {
+    // Milestone 4: return false if database is full
+    public boolean addPet(String name, int age) {
+        if (pets.size() >= MAX_PETS) {
+            return false;
+        }
         pets.add(new Pet(name, age));
+        return true;
     }
 
     // Returns how many pets are currently stored 
@@ -115,6 +123,11 @@ public class PetDatabase {
 
         try (Scanner fileScanner = new Scanner(file)) {
             while (fileScanner.hasNextLine()) {
+                if (pets.size() >= MAX_PETS) {
+                    // Milestone 4: do not load more than 5
+                    break;
+                }
+
                 String line = fileScanner.nextLine().trim();
                 if (line.isEmpty()) {
                     continue;
@@ -136,6 +149,11 @@ public class PetDatabase {
                     continue;
                 }
 
+                // Keep file clean by only loading valid ages 1–20
+                if (age < 1 || age > 20) {
+                    continue;
+                }
+
                 addPet(name, age);
             }
         } catch (FileNotFoundException e) {
@@ -145,12 +163,14 @@ public class PetDatabase {
 
     // 🔹 Milestone 3: Save pets to a text file
     public void saveToFile(String filename) {
-        try (PrintWriter out = new PrintWriter(new FileWriter(filename))) {
-            for (Pet p : pets) {
-                out.println(p.getName() + " " + p.getAge());
-            }
-        } catch (IOException e) {
-            System.out.println("Could not save pets to file: " + e.getMessage());
+    File file = new File(filename);
+
+    try (PrintWriter out = new PrintWriter(new FileWriter(file))) {
+        for (Pet p : pets) {
+            out.println(p.getName() + " " + p.getAge());
         }
+    } catch (IOException e) {
+        System.out.println("Could not save pets to file: " + e.getMessage());
     }
+}
 }
